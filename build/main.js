@@ -53,7 +53,8 @@ app.post("/view", async (req, res, next) => {
                 ],
                 executablePath: process.env.NODE_ENV === "production"
                     ? process.env.PUPPETEER_EXECUTABLE_PATH
-                    : "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe",
+                    : puppeteer.executablePath(),
+                // : "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe",
                 timeout: 0, // Disable timeout to rely on individual page timeout
             });
             const page = await browser.newPage();
