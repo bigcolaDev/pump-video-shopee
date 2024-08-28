@@ -104,13 +104,16 @@
           submitButton.disabled = true; // Disable the button
 
           try {
-            const response = await fetch("http://localhost:5000/view", {
-              method: "POST",
-              body: bodyContent,
-              headers: {
-                "Content-Type": "application/json",
-              },
-            });
+            const response = await fetch(
+              "https://pump-video-shopee.onrender.com/view",
+              {
+                method: "POST",
+                body: bodyContent,
+                headers: {
+                  "Content-Type": "application/json",
+                },
+              }
+            );
 
             const responseText = await response.text(); // Get response as text
             console.log("Response Text:", responseText); // Log the response
