@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="th">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ปั้ม VIDEO | SHOPEE</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
+      rel="stylesheet"
+    />
+  </head>
+  <style>
+    @keyframes flash {
+      0% {
+        opacity: 0;
+      }
+      50% {
+        opacity: 1;
+      }
+      100% {
+        opacity: 0;
+      }
+    }
+
+    .flash {
+      animation: flash 1s ease-in-out infinite;
+    }
+  </style>
+  <body class="bg-gray-100 flex items-center justify-center min-h-screen p-2">
+    <div class="w-full max-w-md p-8 bg-white rounded-2xl">
+      <h1 class="text-2xl font-semibold mb-6 text-gray-700">
+        ปั้ม VIDEO | SHOPEE
+      </h1>
+      <form id="data-form" class="space-y-4">
+        <div>
+          <label for="url" class="block text-sm font-medium text-gray-600"
+            >URL</label
+          >
+          <input
+            type="url"
+            id="url"
+            name="url"
+            class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+            placeholder="กรุณากรอก URL"
+            required
+          />
+        </div>
+        <div>
+          <label for="rounds" class="block text-sm font-medium text-gray-600"
+            >จำนวนรอบ</label
+          >
+          <input
+            type="number"
+            id="rounds"
+            name="rounds"
+            class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+            placeholder="กรุณากรอกจำนวนรอบ"
+            required
+          />
+        </div>
+        <div>
+          <label for="delay" class="block text-sm font-medium text-gray-600"
+            >ดีเลย์ (มิลลิวินาที)</label
+          >
+          <input
+            type="number"
+            id="delay"
+            name="delay"
+            class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+            placeholder="กรุณากรอกดีเลย์เป็นมิลลิวินาที"
+            required
+          />
+        </div>
+        <button
+          type="submit"
+          id="submit-button"
+          class="w-full bg-indigo-600 text-white py-2 px-4 rounded-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+        >
+          เริ่ม
+        </button>
+      </form>
+    </div>
+
+    <script>
+      document
+        .getElementById("data-form")
+        .addEventListener("submit", async (event) => {
+          event.preventDefault();
+
+          const url = document.getElementById("url").value;
+          const rounds = document.getElementById("rounds").value;
+          const delay = document.getElementById("delay").value;
+
+          const bodyContent = JSON.stringify({
+            url: url,
+            rounds: parseInt(rounds),
+            delay: parseInt(delay),
+          });
+
+          // Change button text to "โปรดรอซักครู่..."
+          const submitButton = document.getElementById("submit-button");
+          submitButton.textContent = "โปรดรอซักครู่...";
+          submitButton.classList.add("flash");
+          submitButton.disabled = true; // Disable the button
+
+          try {
+            const response = await fetch("http://localhost:5000/view", {
+              method: "POST",
+              body: bodyContent,
+              headers: {
+                "Content-Type": "application/json",
+              },
+            });
+
+            const responseText = await response.text(); // Get response as text
+            console.log("Response Text:", responseText); // Log the response
+
+            try {
+              const data = JSON.parse(responseText); // Parse the text as JSON
+              alert(data.message);
+            } catch (parseError) {
+              console.error("Error parsing JSON:", parseError);
+              alert("ได้รับข้อมูลที่ไม่ใช่ JSON");
+            }
+          } catch (error) {
+            console.error("Error:", error);
+            alert("เกิดข้อผิดพลาด!");
+          } finally {
+            // Revert button text back to "เริ่ม"
+            submitButton.textContent = "เริ่ม";
+            submitButton.classList.remove("flash");
+            submitButton.disabled = false; // Enable the button
+            // Reset the form
+            document.getElementById("data-form").reset();
+            console.log("Form reset!");
+          }
+        });
+    </script>
+  </body>
+</html>
